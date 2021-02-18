@@ -6,23 +6,17 @@ import { ClienteDTO } from "../../models/cliente.dto";
 import { StorageService } from "../storage.service";
 
 @Injectable()
-export class ClienteService{
-    
-    constructor(public http: HttpClient, public storage : StorageService){
+export class ClienteService {
+
+    constructor(public http: HttpClient, public storage: StorageService) {
     }
 
-    findByEmail(email : string) : Observable<ClienteDTO>{
-     
-        let token = this.storage.getLocalUser().token;
-        let authHeader = new HttpHeaders({'Authorization': 'Bearer ' + token});
-
-        return this.http.get<ClienteDTO>(
-            `${API_CONFIG.baseUrl}/clientes/email?value=${email}`,
-            {'headers' : authHeader});
+    findByEmail(email: string): Observable<ClienteDTO> {
+        return this.http.get<ClienteDTO>(`${API_CONFIG.baseUrl}/clientes/email?value=${email}`);
     }
 
-    getImageFromBucket(id : String) : Observable<any>{
+    getImageFromBucket(id: String): Observable<any> {
         let url = `${API_CONFIG.bucketBaseUrl}/cp${id}.jpg`;
-        return this.http.get(url, {responseType : 'blob'});
+        return this.http.get(url, { responseType: 'blob' });
     }
 }
