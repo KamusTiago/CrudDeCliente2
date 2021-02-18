@@ -23,6 +23,17 @@ export class AuthService{
                  responseType: 'text' //corpo vazio para evitar error de parse no json
              });
     }
+
+    refreshToken(){
+        return  this.http.post(
+             `${API_CONFIG.baseUrl}/auth/refresh_token`,
+              {},
+              {
+                  observe: 'response',
+                  responseType: 'text' //corpo vazio para evitar error de parse no json
+              });
+     }
+
     sucessfulLogin(authorizationValue : String){
         let tok = authorizationValue.substring(7);
         let user : LocalUser = {
