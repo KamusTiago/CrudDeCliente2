@@ -1,6 +1,6 @@
 import { HttpEvent, HTTP_INTERCEPTORS, HttpHandler, HttpRequest,HttpInterceptor } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { AlertController } from "ionic-angular";
+import { AlertController } from "ionic-angular/components/alert/alert-controller";
 import { Observable } from "rxjs/Rx"; //IMPORTANTE: Import atualizado
 import { StorageService } from "../services/storage.service";
 
