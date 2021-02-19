@@ -26,7 +26,7 @@ export class ProfilePage {
     if (localUser && localUser.email) {
       this.clienteService.findByEmail(localUser.email)
         .subscribe(response => {
-          this.cliente = response;
+          this.cliente = response as ClienteDTO; //a resposta vai casar com os dados do cliente
           this.getImageIfExists();
         },
           error => {
