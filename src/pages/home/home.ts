@@ -44,9 +44,11 @@ export class HomePage {
       this.auth.sucessfulLogin(response.headers.get('Authorization'));
       this.navCtrl.setRoot("CategoriasPage");
     },
-    error =>{});
-  
-    
+    error =>{});   
+  }
+
+  singup(){
+    this.navCtrl.push("SingupPage");
   }
 
 
