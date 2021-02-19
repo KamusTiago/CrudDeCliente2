@@ -1,82 +1,108 @@
-import { HttpEvent, HTTP_INTERCEPTORS, HttpHandler, HttpRequest,HttpInterceptor } from "@angular/common/http";
+import { HttpEvent, HTTP_INTERCEPTORS, HttpHandler, HttpRequest, HttpInterceptor } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { AlertController } from "ionic-angular/components/alert/alert-controller";
 import { Observable } from "rxjs/Rx"; //IMPORTANTE: Import atualizado
+import { FieldMessage } from "../models/fildmessage";
 import { StorageService } from "../services/storage.service";
 
 @Injectable()
-export class ErrorInterceptor implements HttpInterceptor{
+export class ErrorInterceptor implements HttpInterceptor {
 
-    constructor(public storage : StorageService, public alertCtrl: AlertController){   
+    constructor(public storage: StorageService, public alertCtrl: AlertController) {
     }
 
-    intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>>{
+    intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
         return next.handle(req)
-        .catch((error, caught) => {
-            let errorObj = error;
-            if(errorObj.error){
-                errorObj = errorObj.error;
-            }
-            if(!errorObj.status){
-                errorObj= JSON.parse(errorObj)
-            }
+            .catch((error, caught) => {
+                let errorObj = error;
+                if (errorObj.error) {
+                    errorObj = errorObj.error;
+                }
+                if (!errorObj.status) {
+                    errorObj = JSON.parse(errorObj)
+                }
 
-            console.log("Erro detectado pelo interceptor:");
-            console.log(errorObj);
+                console.log("Erro detectado pelo interceptor:");
+                console.log(errorObj);
 
-            switch(errorObj.status){
-                case 401:
-                this.handle401();
-                break;
-               
-                case 403:
-                this.handle403();
-                break;
+                switch (errorObj.status) {
+                    case 401:
+                        this.handle401();
+                        break;
 
-                default:
-                    this.hanldeDefaultError(errorObj)
-            }
+                    case 403:
+                        this.handle403();
+                        break;
 
-            return Observable.throw(errorObj);
-        }) as any;
+                    case 422:
+                        this.handle422(errorObj);
+                        break;    
+
+                    default:
+                        this.hanldeDefaultError(errorObj)
+                }
+
+                return Observable.throw(errorObj);
+            }) as any;
     }
 
-    handle401(){
-       let alert = this.alertCtrl.create({
-           title: 'Erro 401: falha de autenticação',
-           message: 'E-mail ou senha incorretos, por favor verifique se seus dados estão corretos',
-           enableBackdropDismiss: false,
-           buttons:[
-               {
-                   text: 'OK!'
-              }
-           ]
-       });
-       alert.present();
-    }
-
-    handle403(){
-        this.storage.setLocalUser(null);
-    }
-
-    hanldeDefaultError(errorObj){
+    handle401() {
         let alert = this.alertCtrl.create({
-            title: 'Erro ' + errorObj.status + ': ' + errorObj.error,
-            message: errorObj.message,
+            title: 'Erro 401: falha de autenticação',
+            message: 'E-mail ou senha incorretos, por favor verifique se seus dados estão corretos',
             enableBackdropDismiss: false,
-            buttons:[
+            buttons: [
                 {
                     text: 'OK!'
-               }
+                }
             ]
         });
         alert.present();
     }
 
+    handle403() {
+        this.storage.setLocalUser(null);
+    }
+
+    handle422(errorObj){
+        let alert = this.alertCtrl.create({
+            title: 'Erro 422: Validação',
+            message: this.listErros(errorObj.erros),
+            enableBackdropDismiss: false,
+            buttons: [
+                {
+                    text: 'OK!'
+                }
+            ]
+        });
+        alert.present();
+    }
+
+    hanldeDefaultError(errorObj) {
+        let alert = this.alertCtrl.create({
+            title: 'Erro ' + errorObj.status + ': ' + errorObj.error,
+            message: errorObj.message,
+            enableBackdropDismiss: false,
+            buttons: [
+                {
+                    text: 'OK!'
+                }
+            ]
+        });
+        alert.present();
+    }
+
+    private listErros(messages : FieldMessage[]) : string{
+        let s : string = '';
+        for(var i=0; i<messages.length; i++){
+            s = s + '<p><strong>' + messages[i].fieldName + "</strong>: " + messages[i].message + '</p>';
+        }
+        return s;
+    }
 }
 
 export const ErrorInteceptorProvider = {
-    provide : HTTP_INTERCEPTORS,
+    provide: HTTP_INTERCEPTORS,
     useClass: ErrorInterceptor,
     multi: true,
 };
