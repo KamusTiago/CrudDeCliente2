@@ -1,3 +1,4 @@
+import { ConsultaCepService } from '../services/domain/consultacep.service';
 import { BrowserModule } from '@angular/platform-browser';
 import {HttpClientModule} from '@angular/common/http';
 import { ErrorHandler, NgModule } from '@angular/core';
@@ -7,15 +8,13 @@ import { MyApp } from './app.component';
 
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
-import { CategoriaService } from '../services/domain/categoria.service';
 import { ErrorInteceptorProvider } from '../interceptors/error-interceptor';
 import { AuthService } from '../services/auth.service';
 import { StorageService } from '../services/storage.service';
 import { ClienteService } from '../services/domain/cliente.service';
 import { AuthInteceptorProvider } from '../interceptors/auth-interceptor';
-import { ProdutoService } from '../services/domain/produto.service';
-import { CartService } from '../services/domain/cart.service';
-import { ImageUtilService } from '../services/image-util.service';
+import { DropdownService } from '../services/dropdown.service';
+
 
 @NgModule({
   declarations: [
@@ -24,7 +23,7 @@ import { ImageUtilService } from '../services/image-util.service';
   imports: [
     BrowserModule,
     HttpClientModule,
-    IonicModule.forRoot(MyApp),
+    IonicModule.forRoot(MyApp)
   ],
   bootstrap: [IonicApp],
   entryComponents: [
@@ -34,15 +33,13 @@ import { ImageUtilService } from '../services/image-util.service';
     StatusBar,
     SplashScreen,
     {provide: ErrorHandler, useClass: IonicErrorHandler},
-    CategoriaService,
     AuthInteceptorProvider,
     ErrorInteceptorProvider,
-    AuthService, 
-    StorageService, 
+    AuthService,
+    StorageService,
     ClienteService,
-    ProdutoService,
-    CartService,
-    ImageUtilService
+    ConsultaCepService,
+    DropdownService
   ]
 })
 export class AppModule {}

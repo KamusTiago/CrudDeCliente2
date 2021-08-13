@@ -33,7 +33,7 @@ export class HomePage {
       this.auth.refreshToken()
     .subscribe(response => {
       this.auth.sucessfulLogin(response.headers.get('Authorization'));
-      this.navCtrl.setRoot("CategoriasPage");
+      this.navCtrl.setRoot("ProfilePage");
     },
     error =>{});
     }
@@ -42,7 +42,7 @@ export class HomePage {
     this.auth.authenticate(this.creds)
     .subscribe(response => {
       this.auth.sucessfulLogin(response.headers.get('Authorization'));
-      this.navCtrl.setRoot("CategoriasPage");
+      this.navCtrl.setRoot("ProfilePage");
     },
     error =>{});   
   }

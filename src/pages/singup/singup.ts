@@ -1,6 +1,10 @@
+import { EstadoBr } from './../../models/EstadoBr';
+import { DropdownService } from './../../services/dropdown.service';
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AlertController, IonicPage, NavController, NavParams } from 'ionic-angular';
+import { ConsultaCepService } from '../../services/domain/consultacep.service';
+
 import { CidadeDTO } from '../../models/cidade.dto';
 import { EstadoDTO } from '../../models/estado.dto';
 import { CidadeService } from '../../services/domain/cidade.service';
@@ -18,6 +22,8 @@ export class SingupPage {
   estados: EstadoDTO[];
   cidades: CidadeDTO[];
 
+  estados2: EstadoBr[];
+
   constructor(
     public navCtrl: NavController,
     public navParams: NavParams,
@@ -25,28 +31,45 @@ export class SingupPage {
     public cidadeService: CidadeService,
     public estadoService: EstadoService,
     public clienteService: ClienteService,
-    public alertCtrl: AlertController) {
+    public alertCtrl: AlertController,
+    public consultaCepService: ConsultaCepService,
+    public dropDownService: DropdownService) {
 
     this.formGroup = this.formBuilder.group({
-      nome: ['Meu nome é Ari e eu não to nem ai', [Validators.required, Validators.minLength(5), Validators.maxLength(120)]],
-      email: ['michaelkyle@gmail.com', [Validators.required, Validators.email]],
-      tipo: ['1', [Validators.required]],
-      cpfOuCnpj: ['06134596280', [Validators.required, Validators.minLength(11), Validators.maxLength(14)]],
-      senha: ['123', [Validators.required]],
-      logradouro: ['Eu, a patroa e as crianças', [Validators.required]],
-      numero: ['25', [Validators.required]],
-      complemento: ['hum! é mesmo?', []],
-      bairro: ['patroa', []],
-      cep: ['10828333', [Validators.required]],
-      telefone1: ['40028922', [Validators.required]],
+      nome: ['', [Validators.required, Validators.minLength(5), Validators.maxLength(120)]],
+      email: ['', [Validators.required, Validators.email]],
+      cpf: ['', [Validators.required, Validators.minLength(11)]],
+      senha: ['', [Validators.required]],
+      logradouro: ['', [Validators.required]],
+      numero: ['', [Validators.required]],
+      complemento: ['', []],
+      bairro: ['', []],
+      cep: ['', [Validators.required]],
+      telefone1: ['', [Validators.required]],
       telefone2: ['', []],
       telefone3: ['', []],
-      estadoId: [null, [Validators.required]],
-      cidadeId: [null, [Validators.required]]
+      estado: ['', [Validators.required]],
+      cidade: ['', [Validators.required]]
     });
   }
 
+  consultaCEP(){
+    let cep = this.formGroup.get('cep').value;
+
+    if(cep !== null && cep !== ''){
+      this.consultaCepService.consultaCEP(cep).subscribe(dados => this.popularDadosForm(dados));
+    }
+  }
+
+  popularDadosForm(dados){
+    this.formGroup.patchValue({
+      logradouro: dados.logradouro,
+
+    })
+  }
+
   ionViewDidLoad() {
+
     this.estadoService.findAll()
       .subscribe(response => {
         this.estados = response;

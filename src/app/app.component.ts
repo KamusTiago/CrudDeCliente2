@@ -1,3 +1,4 @@
+import { ConsultaCepService } from './../services/domain/consultacep.service';
 import { Component, ViewChild } from '@angular/core';
 import { Nav, Platform } from 'ionic-angular';
 import { StatusBar } from '@ionic-native/status-bar';
@@ -19,15 +20,15 @@ export class MyApp {
     public platform: Platform,
     public statusBar: StatusBar,
     public splashScreen: SplashScreen,
-    public auth: AuthService
+    public auth: AuthService,
+    public consultaCep: ConsultaCepService
   ) {
     this.initializeApp();
 
     // used for an example of ngFor and navigation
     this.pages = [
       { title: 'Perfil', component: "ProfilePage" },
-      { title: 'Categorias', component: "CategoriasPage" },
-      {title: 'Carrinho', component: "CartPage"},
+      {title: 'Gestão', component: "GestaoPage"},
       { title: 'Logout', component: ''}
     ];
 
